@@ -41,3 +41,12 @@ type loadbalancer struct {
 	roundRobinCount int
 	servers []Server
 }
+
+func newLoadBalancer(port string, servers []Server) *loadbalancer {
+	return &loadbalancer{
+		port: port,
+		servers: servers,
+		roundRobinCount: 0,
+	}
+
+}
