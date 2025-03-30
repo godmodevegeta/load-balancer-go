@@ -65,7 +65,13 @@ func (s *simpleServer) Serve(rw http.ResponseWriter, req *http.Request) {
 
 func (lb *loadbalancer) getNextAvailableServer() Server {
 	// round robin algo
-		
+	server := lb.servers[lb.roundRobinCount % len(lb.servers)]
+	for !server.isAlive(){
+		lb.roundRobinCount++
+		server = lb.servers[lb.roundRobinCount % len(lb.servers)]
+	}
+	lb.roundRobinCount++
+	return server
 }
 
 func (lb *loadbalancer) serveProxy(rw http.ResponseWriter, req *http.Request) {
