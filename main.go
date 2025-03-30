@@ -64,11 +64,14 @@ func (s *simpleServer) Serve(rw http.ResponseWriter, req *http.Request) {
 } 
 
 func (lb *loadbalancer) getNextAvailableServer() Server {
-	
+	// round robin algo
+		
 }
 
-func (lb *loadbalancer) serveProxy(rw http.ResponseWriter, r *http.Request) {
-
+func (lb *loadbalancer) serveProxy(rw http.ResponseWriter, req *http.Request) {
+	targetServer := lb.getNextAvailableServer()
+	fmt.Printf("forwarding request to address %q\n", targetServer.Address())
+	targetServer.Serve(rw, req)
 }
 
 func main() {
