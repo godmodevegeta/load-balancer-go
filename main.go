@@ -2,10 +2,17 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"os"
 )
+
+type Server interface {
+	address() string
+	isAlive() bool
+	Serve(rw http.ResponseWriter, r *http.Request) 
+}
 
 type simpleServer struct {
 	address string
@@ -27,4 +34,10 @@ func handleError(err error) {
 		fmt.Printf("error: %v\n", err)
 		os.Exit(1)
 	}
+}
+
+type loadbalancer struct {
+	port string
+	roundRobinCount int
+	servers []Server
 }
