@@ -50,3 +50,11 @@ func newLoadBalancer(port string, servers []Server) *loadbalancer {
 	}
 
 }
+
+func (lb *loadbalancer) getNextAvailableServer() Server {
+	
+}
+
+func (lb *loadbalancer) serveProxy(rw http.ResponseWriter, r *http.Request) {
+
+}
