@@ -9,7 +9,7 @@ import (
 )
 
 type Server interface {
-	address() string
+	Address() string
 	isAlive() bool
 	Serve(rw http.ResponseWriter, r *http.Request) 
 }
@@ -51,10 +51,42 @@ func newLoadBalancer(port string, servers []Server) *loadbalancer {
 
 }
 
+func (s *simpleServer) Address() string {
+	return s.address
+}
+
+func (s *simpleServer) isAlive() bool {
+	return true
+}
+
+func (s *simpleServer) Serve(rw http.ResponseWriter, req *http.Request) {
+	s.proxy.ServeHTTP(rw, req)
+} 
+
 func (lb *loadbalancer) getNextAvailableServer() Server {
 	
 }
 
 func (lb *loadbalancer) serveProxy(rw http.ResponseWriter, r *http.Request) {
+
+}
+
+func main() {
+	servers := []Server{
+		newSimpleServer("http://www.twitter.com"),
+		newSimpleServer("http://www.bing.com"),
+		newSimpleServer("http://www.google.com"),
+	}
+
+	lb := newLoadBalancer("8000", servers)
+	handleRedirect := func(rw http.ResponseWriter, req *http.Request) {
+		lb.serveProxy(rw, req)
+
+	}
+	http.HandleFunc("/", handleRedirect)
+
+	fmt.Printf("Serving requests at 'localhost:%s'\n", lb.port)
+	http.ListenAndServe(":" + lb.port, nil)
+
 
 }
